@@ -1,0 +1,21 @@
+# Script to read in data and generate plot4 for the course project.
+DataLoc <- "./household_power_consumption.txt"
+PwrData <- read.table(DataLoc, header=TRUE, sep=";", stringsAsFactors = FALSE, dec=".")
+TwoDayLook <- PwrData[PwrData$Date %in% c("1/2/2007", "2/2/2007"),]
+DTConv <- strptime(paste(TwoDayLook$Date, TwoDayLook$Time, sep=" "), "%d/%m/%Y%H:%M:%S")
+GAP <- as.numeric(TwoDayLook$Global_active_power)
+GRP <- as.numeric(TwoDayLook$Global_reactive_power)
+Volt <- as.numeric(TwoDayLook$Voltage)
+SubM1 <- as.numeric(TwoDayLook$Sub_metering_1)
+SubM2 <- as.numeric(TwoDayLook$Sub_metering_2)
+SubM3 <- as.numeric(TwoDayLook$Sub_metering_3)
+png("plot4.png", width = 480, height = 480)
+par(mfrow = c(2,2))
+plot(DTConv, GAP, type="l", xlab = "", ylab = "Global Active Power", cex=0.2)
+plot(DTConv, Volt, type = "l", xlab = "datetime", ylab = "Voltage")
+plot(DTConv, SubM1, type = "l", xlab = "", ylab = "Energy Submetering")
+lines(DTConv, SubM2, type = "l", col = "red")
+lines(DTConv, SubM3, type = "l", col = "blue")
+legend("topright", c("Sub_metering_1","Sub_metering_2", "Sub_metering_3"), lty=1, lwd = 2.5, col = c("black", "red", "blue"))
+plot(DTConv, GRP, type = "l", xlab = "datetime", ylab = "Global_reactive_power")
+dev.off()
